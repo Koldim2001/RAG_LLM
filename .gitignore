@@ -2,4 +2,4 @@
 **.pt
 **__pycache__
 **ipynb_checkpoints
-data/models
+models/nlp
