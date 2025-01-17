@@ -1,0 +1,78 @@
+version: '2.3'
+
+x-environment: &environment
+  DEBUG: 1
+
+services:
+  emb:
+    container_name: embedder
+    image: ghcr.io/huggingface/text-embeddings-inference:1.5.1
+    restart: always
+    ports:
+      - 8080:80
+    volumes:
+      - /data/models/nlp/embedders:/data
+    pull_policy: always
+    runtime: nvidia
+    environment:
+      <<: *environment
+    command: --model-id ${MODEL_PATH_EMB} --max-client-batch-size 512 --max-concurrent-requests 512
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: [ '0' ]
+            capabilities: [gpu]
+    shm_size: 64g
+    ulimits:
+      memlock: -1
+      stack: 67108864
+      
+  reranker:
+    container_name: reranker
+    image: ghcr.io/huggingface/text-embeddings-inference:1.5
+    restart: always
+    ports:
+      - 8081:80
+    volumes:
+      - /data/models/nlp/embedders:/data
+    pull_policy: always
+    runtime: nvidia
+    environment:
+      <<: *environment
+    command: --model-id ${MODEL_PATH_RETRIEVAL} --max-client-batch-size 128 
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: [ '0' ]
+            capabilities: [gpu]
+    shm_size: 64g
+    ulimits:
+      memlock: -1
+      stack: 67108864
+      
+  vllm-small:
+    image: vllm/vllm-openai:latest
+    restart: always
+    ports:
+      - 8071:8000
+    volumes:
+      - /data/models/nlp/:/models
+    runtime: nvidia
+    environment:
+      <<: *environment
+    command: --model Qwen/Qwen2.5-3B-Instruct-GPTQ-Int4 --port 8000 --served-model-name Qwen/Qwen2.5-3B-Instruct-GPTQ-Int4 --enable-auto-tool-choice --tool-call-parser hermes --gpu-memory-utilization 0.60
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: [ '0' ]
+            capabilities: [gpu]
+    shm_size: 64g
+    ulimits:
+      memlock: -1
+      stack: 67108864
