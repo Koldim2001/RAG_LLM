@@ -12,8 +12,8 @@ services:
       - 8080:80
     volumes:
       - ./data/models/nlp/embedders:/data
+    #  - ./data/cache/nlp/embedders:/root/.cache/huggingface  # Монтируем кэш Hugging Face
     pull_policy: always
-    #runtime: nvidia
     environment:
       <<: *environment
     command: --model-id ${MODEL_PATH_EMB} --max-client-batch-size 512 --max-concurrent-requests 512
@@ -36,9 +36,9 @@ services:
     ports:
       - 8081:80
     volumes:
-      - ./data/models/nlp/embedders:/data
+      - ./data/models/nlp/rerankers:/data
+    #  - ./data/cache/nlp/rerankers:/root/.cache/huggingface  # Монтируем кэш Hugging Face
     pull_policy: always
-    #runtime: nvidia
     environment:
       <<: *environment
     command: --model-id ${MODEL_PATH_RETRIEVAL} --max-client-batch-size 128 
@@ -60,8 +60,7 @@ services:
     ports:
       - 8071:8000
     volumes:
-      - ./data/models/nlp/:/models
-    #runtime: nvidia
+      - ./data/models/nlp/llm/:/models
     environment:
       <<: *environment
     command: --model Qwen/Qwen2.5-3B-Instruct-GPTQ-Int4 --port 8000 --served-model-name Qwen/Qwen2.5-3B-Instruct-GPTQ-Int4 --enable-auto-tool-choice --tool-call-parser hermes --gpu-memory-utilization 0.60
