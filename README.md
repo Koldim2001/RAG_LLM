@@ -1,13 +1,13 @@
-# RAG (Retrieval Augmented Generation) of LLM
+# Примеры инференса готовых моделей
 
-Модели:
+### Модели:
 ```
 LLM: Qwen/Qwen2.5-3B-Instruct-GPTQ-Int4
 VQA: Qwen/Qwen2-VL-7B-Instruct-GPTQ-Int4 
 Embedder : intfloat/multilingual-e5-large-instruct
 Reranker : BAAI/bge-reranker-v2-m3
 ```
-
+#### код с примерами - *test_gpt.ipynb*
 
 Как предустановить модель Qwen чтобы вольюм ее увидел и без инета запускал (ps: VQA модель качать идентично только в папку models/nlp/vqa):
 ```
