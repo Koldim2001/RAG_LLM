@@ -9,7 +9,7 @@ Reranker : BAAI/bge-reranker-v2-m3
 ```
 
 
-Как предустановить модель Qwen чтобы вольюм ее увидел и без инета запускал (ps: VQA модель качать идентично):
+Как предустановить модель Qwen чтобы вольюм ее увидел и без инета запускал (ps: VQA модель качать идентично только в папку models/nlp/vqa):
 ```
 cd models/nlp/llm
 git clone https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GPTQ-Int4

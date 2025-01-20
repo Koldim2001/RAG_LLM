@@ -82,10 +82,10 @@ services:
     ports:
       - 8089:8000
     volumes:
-      - ./models/nlp/llm:/models
+      - ./models/nlp/vqa:/models
     environment:
       <<: *environment
-    command: --model /models/Qwen2-VL-7B-Instruct-GPTQ-Int4 --port 8000 --gpu-memory-utilization 0.95 --served-model-name Qwen/Qwen2-VL-7B-Instruct-GPTQ-Int4 --limit-mm-per-prompt "image=6"
+    command: --model /models/Qwen2-VL-7B-Instruct-GPTQ-Int4 --port 8000 --gpu-memory-utilization 0.95 --served-model-name Qwen/Qwen2-VL-7B-Instruct-GPTQ-Int4 --limit-mm-per-prompt "image=1"
     deploy:
       resources:
         reservations:
@@ -93,8 +93,3 @@ services:
           - driver: nvidia
             device_ids: [ '0' ]
             capabilities: [gpu]
-    shm_size: 64g
-    ulimits:
-      memlock: -1
-      stack: 67108864
-
