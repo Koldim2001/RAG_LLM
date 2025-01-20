@@ -3,12 +3,13 @@
 Модели:
 ```
 LLM: Qwen/Qwen2.5-3B-Instruct-GPTQ-Int4
+VQA: Qwen/Qwen2-VL-7B-Instruct-GPTQ-Int4 
 Embedder : intfloat/multilingual-e5-large-instruct
 Reranker : BAAI/bge-reranker-v2-m3
 ```
 
 
-Как предустановить модель Qwen чтобы вольюм ее увидел и без инета запускал:
+Как предустановить модель Qwen чтобы вольюм ее увидел и без инета запускал (ps: VQA модель качать идентично):
 ```
 cd models/nlp/llm
 git clone https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GPTQ-Int4
