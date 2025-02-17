@@ -3,3 +3,4 @@ langchain
 langchain-community
 langchain-core
 requests
+pymilvus
