@@ -87,6 +87,7 @@ services:
     volumes:
       - ./volume_extra_services/etcd:/etcd
     command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    
   minio:
     container_name: milvus-minio
     restart: always
@@ -107,6 +108,7 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+
   milvus-standalone:
     container_name: milvus-standalone
     restart: always
