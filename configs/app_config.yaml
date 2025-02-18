@@ -16,6 +16,7 @@ vector_db_node:
 embedder_node:
   host: localhost
   port: 8080
+  max_batch_size: 512 # сколько чанков можно подать за раз
 
 reranker_node:
   host: localhost
