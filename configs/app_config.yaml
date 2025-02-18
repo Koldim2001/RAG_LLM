@@ -26,6 +26,7 @@ chunking_node:
 vector_db_node:  
   host: localhost
   port: 19530
+  dim: 1024 # размерность вектора
 
 embedder_node:
   host: localhost

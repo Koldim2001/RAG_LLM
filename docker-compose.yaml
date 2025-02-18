@@ -85,7 +85,7 @@ services:
       - ETCD_QUOTA_BACKEND_BYTES=4294967296
       - ETCD_SNAPSHOT_COUNT=50000
     volumes:
-      - ./services/etcd:/etcd
+      - ./volume_extra_services/etcd:/etcd
     command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
   minio:
     container_name: milvus-minio
@@ -97,7 +97,7 @@ services:
     expose:
       - 9001
     volumes:
-      - ./services/minio:/minio_data
+      - ./volume_extra_services/minio:/minio_data
     command: minio server /minio_data --console-address ":9001"
     ports:
       - 9001:9001
@@ -116,7 +116,7 @@ services:
       ETCD_ENDPOINTS: etcd:2379
       MINIO_ADDRESS: minio:9000
     volumes:
-      - ./services/milvus:/var/lib/milvus
+      - ./volume_extra_services/milvus:/var/lib/milvus
     ports:
       - 19530:19530
     depends_on:
