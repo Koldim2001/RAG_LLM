@@ -1,22 +1,6 @@
-# --------------------------------------------- HYDRA -----------------------------------------------------
-defaults:  
-  - _self_  
-  - override hydra/hydra_logging: disabled  
-  - override hydra/job_logging: custom
-
-hydra:
-  output_subdir: null
-  run:  
-    dir: .
-
-# ----------------------------------------------- PIPELINE -------------------------------------------------
-
-pipeline:
-  save_parsing_results_to_file: False  # Сохранение текста и чанков в файл для дебага
-
 # ------------------------------------------------- NODES --------------------------------------------------
 
-DataParsingNode:
+data_parsing_node:
   min_words: 3 # минимальное число слов в предложении
 
 chunking_node:
@@ -27,11 +11,11 @@ vector_db_node:
   host: localhost
   port: 19530
   dim: 1024 # размерность вектора
+  top_k: 20 # сколько сообщений взять ближайших чанков из бд
 
 embedder_node:
   host: localhost
   port: 8080
-  top_k: 20 # сколько сообщений взять ближайших чанков из бд
 
 reranker_node:
   host: localhost

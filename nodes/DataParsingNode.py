@@ -21,7 +21,7 @@ class DataParsingNode:
         # Парсинг и фильтрация
         url_data = {}
         for url in urls:
-            print(f"Парсинг {url}...")
+            logger.info(f"Парсинг {url}...")
             parsed_data = self.parse_url(url)
             if parsed_data['text']:
                 filtered_text = self.filter_text(parsed_data['text'])
