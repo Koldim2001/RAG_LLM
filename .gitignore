@@ -6,3 +6,4 @@ models/nlp
 test_content
 **.txt
 services
+results

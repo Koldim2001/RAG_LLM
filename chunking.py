@@ -50,7 +50,7 @@ def filter_text(text, min_words=3):
         return ''
 
     lines = text.split("\n")
-    filtered_text = [line.strip() for line in lines if len(line.split()) > min_words]
+    filtered_text = [line.strip() for line in lines if len(line.split()) >= min_words]
 
     # Поиск стоп-фраз
     stop_phrases = [
