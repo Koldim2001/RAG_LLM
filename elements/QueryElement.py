@@ -54,9 +54,6 @@ class QueryElement:
             # каждый элемент списка — это словарь с ключами 'type' и 'content'
             print("Итоговый промпт, подаваемый на вход модели:\n")
             for message in self.final_prompt:
-                if 'type' in message and 'content' in message:
-                    print(f"{message['type']}: {message['content']}\n")
-                else:
-                    print(f"Неверный формат сообщения: {message}")
+                print(f"{message.type}: {message.content}")
         else:
             print(f"Неподдерживаемый формат итогового промпта: {type(self.final_prompt)}")

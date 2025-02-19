@@ -1,5 +1,4 @@
 import logging
-from typing import List
 from utils_local.utils import profile_time
 import yaml
 
@@ -7,6 +6,7 @@ from elements.QueryElement import QueryElement
 from nodes.RerankerNode import RerankerNode
 from nodes.VectorDBNode import VectorDBNode
 from nodes.EmbedderNode import EmbedderNode
+from nodes.LLMNode import LLMNode
 
 # Настройка логгера для работы в режиме INFO
 logging.basicConfig(
@@ -26,8 +26,8 @@ class AskLLM:
         self.vector_db_node = VectorDBNode(config["vector_db_node"])
         self.embedder_node = EmbedderNode(config["embedder_node"])
         self.reranker_node = RerankerNode(config["reranker_node"])
+        self.llm_node = LLMNode(config["llm_node"])
        
-
     @profile_time
     def process(self, query: str, message_number=0, collection_db_name=None, previous_messages=[], show_data_info=False):
         """Наполняет датасет по данным url"""
@@ -43,8 +43,20 @@ class AskLLM:
                 query_element.display_chunks(query_element.top_chunks, limit_size=200)
             
             query_element = self.reranker_node.process(query_element)
+
             if show_data_info:
                 print("\n=======================\n")
                 print("Результат после реранка:")
                 query_element.display_chunks(query_element.prompt_chunks, limit_size=200)
 
+            query_element = self.llm_node.answer_with_rag(query_element)
+
+        else:
+            query_element = self.llm_node.answer(query_element)
+
+        if show_data_info:
+            print("\n=======================\n")
+            print("ИТОГОВЫЙ ПРОМПТ В LLM:")
+            query_element.display_final_prompt()
+
+        return query_element
