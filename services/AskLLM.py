@@ -32,7 +32,9 @@ class AskLLM:
     def process(self, query: str, message_number=0, collection_db_name=None, previous_messages=[], show_data_info=False):
         """Наполняет датасет по данным url"""
         query_element = QueryElement(query, message_number, collection_db_name, previous_messages)
-        # тут добавим обработку upgraded_query (с учетом истории чата)
+        # уточнение запроса с учетом чата:
+        query_element.upgraded_query = self.llm_node.make_abstract(query_element)
+
         if collection_db_name is not None and self.vector_db_node.db_has_collection(collection_db_name):
             embedding = self.embedder_node.embed_query(query_element.upgraded_query)
             similar_chunks = self.vector_db_node.search_similar_chunks(collection_db_name, embedding)
@@ -50,12 +52,11 @@ class AskLLM:
                 query_element.display_chunks(query_element.prompt_chunks, limit_size=200)
                 print("\n=======================\n")
 
-            query_element = self.llm_node.answer_with_rag(query_element)
-
+            query_element = self.llm_node.answer_with_rag(query_element, show_data_info)
         else:
-            query_element = self.llm_node.answer(query_element)
-
-        if show_data_info:
-            query_element.display_final_prompt()
+            query_element = self.llm_node.answer(query_element, show_data_info)
 
         return query_element
+    
+    def get_new_history(self, query_element: QueryElement) -> list:
+        return self.llm_node.get_new_history(query_element)
