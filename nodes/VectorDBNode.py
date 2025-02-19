@@ -16,6 +16,10 @@ class VectorDBNode:
         connections.connect("default", host=self.host, port=self.port)
         logger.info(f"Connected to Milvus at {self.host}:{self.port} successfully!")
 
+    def db_has_collection(self, collection_name):
+        # проверка наличия коллекции
+        return utility.has_collection(collection_name)
+
     def create_milvus_collection(self, collection_name):
         """
         Создает новую коллекцию в Milvus, если она еще не существует.
@@ -196,14 +200,6 @@ class VectorDBNode:
             return []
 
         collection = Collection(collection_name)
-        indexes = utility.index_build_progress(collection_name)
-
-        if not indexes or "embedding" not in [index["field_name"] for index in indexes]:
-            logger.warning(f"No index found on 'embedding' field. Creating an index...")
-            self.create_index(collection_name, field_name="embedding")
-
-        if not collection.is_loaded():
-            collection.load()
 
         search_params = {
             "metric_type": "IP",

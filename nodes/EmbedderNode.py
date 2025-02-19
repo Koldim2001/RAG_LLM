@@ -2,6 +2,7 @@ import logging
 import requests
 from typing import List
 from utils_local.utils import profile_time
+from langchain.schema import Document
 
 logger = logging.getLogger(__name__)
 
@@ -58,3 +59,24 @@ class EmbedderNode:
             List[float]: Эмбеддинг для указанного текста.
         """
         return self.embed_documents([text])[0]
+    
+    @staticmethod
+    def chunks_to_documents(similar_chunks):
+        """
+        Преобразует список чанков в список объектов Document.
+
+        Args:
+            similar_chunks (list): Список кортежей (текст чанка, расстояние до запроса).
+
+        Returns:
+            list: Список объектов Document.
+        """
+        documents = []
+        for i, (text, distance, chunk_length) in enumerate(similar_chunks):
+            metadata = {
+                "source": f"chunk_{i}",  # Источник чанка
+                "distance": round(distance, 6),   # Расстояние до запроса
+                "chunk_length": chunk_length  # Длина чанка
+            }
+            documents.append(Document(page_content=text, metadata=metadata))
+        return documents

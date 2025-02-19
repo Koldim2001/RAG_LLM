@@ -11,7 +11,7 @@ vector_db_node:
   host: localhost
   port: 19530
   dim: 1024 # размерность вектора
-  top_k: 20 # сколько сообщений взять ближайших чанков из бд
+  top_k: 25 # сколько сообщений взять ближайших чанков из бд
 
 embedder_node:
   host: localhost
