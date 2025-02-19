@@ -97,10 +97,15 @@ class LLMNode:
         return query_element
     
     @staticmethod
-    def get_new_history(query_element: QueryElement) -> list:
+    def get_new_history(query_element: QueryElement, max_messages: int = 6) -> list:
         previous_messages = query_element.previous_messages.copy()
         previous_messages.append(HumanMessage(content=query_element.query))
         previous_messages.append(AIMessage(content=query_element.answer))
+
+        # Ограничиваем количество сообщений до max_messages, если история слишком большая
+        if len(previous_messages) > max_messages:
+            previous_messages = previous_messages[-max_messages:]
+    
         return previous_messages
     
     @profile_time
