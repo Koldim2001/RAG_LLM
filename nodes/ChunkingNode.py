@@ -14,21 +14,21 @@ class ChunkingNode:
         self.chunk_size = config["chunk_size"]
         self.chunk_overlap = config["chunk_overlap"]
         self.separators = ["\n\n", "\n", ". ", " "]
-        
-    @profile_time
-    def process(self, data_element: DataElement) -> DataElement:
-        url_data = data_element.url_data
 
-        text_splitter = RecursiveCharacterTextSplitter(
+        self.text_splitter = RecursiveCharacterTextSplitter(
             separators=self.separators,
             chunk_size=self.chunk_size,
             chunk_overlap=self.chunk_overlap,
             length_function=len
         )
+        
+    @profile_time
+    def process(self, data_element: DataElement) -> DataElement:
+        url_data = data_element.url_data
 
         all_chunks = []
         for url, data in url_data.items():
-            chunks = text_splitter.split_text(data['text'])
+            chunks = self.text_splitter.split_text(data['text'])
             for chunk in chunks:
                 # Добавляем описание в начало чанка
                 formatted_chunk = f"[Источник: {data['description']}]\n{chunk}"

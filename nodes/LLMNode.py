@@ -1,7 +1,8 @@
 import logging
+import requests
 from elements.QueryElement import QueryElement
 from utils_local.utils import profile_time
-from langchain_openai import ChatOpenAI  # Используем новый импорт
+from langchain_openai import ChatOpenAI  
 from langchain.schema import HumanMessage, SystemMessage, AIMessage
 
 logger = logging.getLogger(__name__)
@@ -13,8 +14,10 @@ class LLMNode:
         self.host = config["host"]
         self.port = config["port"]
         self.model_name = config["model_name"]  
-        self.max_tokens = config["max_tokens"]  
+        self.max_tokens_output = config["max_tokens_output"] 
+        self.max_tokens_input = config["max_tokens_input"] 
         self.temperature = config["temperature"]  
+        self.max_messages_history = config["max_messages_history"]  
         
         self.openai_api_key = "EMPTY"
         self.openai_api_base = f"http://{self.host}:{self.port}/v1"
@@ -24,7 +27,7 @@ class LLMNode:
             openai_api_key=self.openai_api_key,
             openai_api_base=self.openai_api_base,
             model_name=self.model_name,  
-            max_tokens=self.max_tokens,  
+            max_tokens=self.max_tokens_output,  
             temperature=self.temperature  
         )
 
@@ -67,12 +70,17 @@ class LLMNode:
         if show_data_info:
             query_element.display_final_prompt()
 
+        # Проверяем размер запроса
+        try:
+            self._validate_prompt_size(messages)
+        except ValueError as e:
+            return query_element  # Возвращаем объект без ответа
+
         # Получаем ответ от модели
         response = self.chat.invoke(messages)
         query_element.answer = response.content
             
         return query_element
-
 
     @profile_time
     def answer(self, query_element: QueryElement, show_data_info=False) -> QueryElement:
@@ -90,21 +98,27 @@ class LLMNode:
         if show_data_info:
             query_element.display_final_prompt()
 
+        # Проверяем размер запроса
+        try:
+            self._validate_prompt_size(messages)
+        except ValueError as e:
+            return query_element  # Возвращаем объект с ошибкой
+
         # Получаем ответ от модели
         response = self.chat.invoke(messages)
         query_element.answer = response.content
             
         return query_element
     
-    @staticmethod
-    def get_new_history(query_element: QueryElement, max_messages: int = 6) -> list:
+    def get_new_history(self, query_element: QueryElement) -> list:
         previous_messages = query_element.previous_messages.copy()
         previous_messages.append(HumanMessage(content=query_element.query))
         previous_messages.append(AIMessage(content=query_element.answer))
 
-        # Ограничиваем количество сообщений до max_messages, если история слишком большая
-        if len(previous_messages) > max_messages:
-            previous_messages = previous_messages[-max_messages:]
+        max_len = 2 * self.max_messages_history
+        # Ограничиваем количество сообщений до max_len, если история слишком большая
+        if len(previous_messages) > max_len:
+            previous_messages = previous_messages[-max_len:]
     
         return previous_messages
     
@@ -130,3 +144,63 @@ class LLMNode:
             return abstract
         else:
             return query_element.query
+
+    def count_tokens(self, text: str) -> int:
+        """
+        Подсчитывает количество токенов в заданном тексте через эндпоинт /tokenize.
+
+        :param text: Текст, для которого нужно подсчитать токены.
+        :return: Количество токенов в тексте.
+        """
+        url = f"http://{self.host}:{self.port}/tokenize"
+        payload = {
+            "model": self.model_name,
+            "prompt": text
+        }
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        try:
+            response = requests.post(url, json=payload, headers=headers)
+            response.raise_for_status()  # Проверяем успешность запроса
+            result = response.json()
+            token_count = len(result.get("tokens", []))  # Получаем количество токенов
+            return token_count
+        except requests.exceptions.RequestException as e:
+            print(f"Ошибка при подсчете токенов: {e}")
+            return -1  # Возвращаем -1 в случае ошибки
+        
+    def _messages_to_text(self, messages: list) -> str:
+        """
+        Преобразует список сообщений в одну строку для подсчета символов и токенов.
+        :param messages: Список сообщений.
+        :return: Объединенный текст всех сообщений.
+        """
+        text_parts = []
+        for message in messages:
+            if isinstance(message, SystemMessage):
+                text_parts.append(f"<|system|>{message.content}<|end|>")
+            elif isinstance(message, HumanMessage):
+                text_parts.append(f"<|user|>{message.content}<|end|>")
+            elif isinstance(message, AIMessage):
+                text_parts.append(f"<|assistant|>{message.content}<|end|>")
+        return "\n".join(text_parts)
+    
+    def _validate_prompt_size(self, messages: list):
+        """
+        Проверяет размер запроса (символы и токены) и выбрасывает ошибку, если он превышает лимит.
+        :param messages: Список сообщений для проверки.
+        """
+        # Преобразуем сообщения в строку для подсчета символов и токенов
+        full_prompt_text = self._messages_to_text(messages)
+
+        # Подсчет длины в символах
+        symbols_count = len(full_prompt_text)
+        tokens_count = self.count_tokens(full_prompt_text)
+        logging.info(f"Размер запроса: {symbols_count} символов, {tokens_count} токенов")
+
+        # Проверяем лимит по токенам
+        if tokens_count > self.max_tokens_input:
+            logging.warning(f"Превышение лимита токенов на запрос: {tokens_count} > {self.max_tokens_input}")
+            raise ValueError(f"Размер запроса слишком большой: {symbols_count} символов, {tokens_count} токенов. Максимальный лимит: {self.max_tokens_input} токенов.")
