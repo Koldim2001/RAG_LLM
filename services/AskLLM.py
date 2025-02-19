@@ -32,10 +32,10 @@ class AskLLM:
     def process(self, query: str, message_number=0, collection_db_name=None, previous_messages=[], show_data_info=False):
         """Наполняет датасет по данным url"""
         query_element = QueryElement(query, message_number, collection_db_name, previous_messages)
-        # уточнение запроса с учетом чата:
-        query_element.upgraded_query = self.llm_node.make_abstract(query_element)
 
         if collection_db_name is not None and self.vector_db_node.db_has_collection(collection_db_name):
+            # уточнение запроса с учетом чата:
+            query_element.upgraded_query = self.llm_node.make_abstract(query_element)
             embedding = self.embedder_node.embed_query(query_element.upgraded_query)
             similar_chunks = self.vector_db_node.search_similar_chunks(collection_db_name, embedding)
             query_element.top_chunks = self.embedder_node.chunks_to_documents(similar_chunks)

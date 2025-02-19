@@ -79,7 +79,7 @@ class LLMNode:
         if query_element.previous_messages and query_element.message_number > 0:
             messages = [self.system_prompt] # Системный промпт
             messages.extend(query_element.previous_messages) # История чата
-            messages.append(HumanMessage(content=query_element.query)) # Промпт пользователя с примерами
+            messages.append(HumanMessage(content=query_element.query)) # Промпт пользователя
         else:
             messages = [
                 self.system_prompt,  # Системный промпт
