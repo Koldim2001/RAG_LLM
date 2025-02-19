@@ -1,7 +1,7 @@
 import logging
 from elements.QueryElement import QueryElement
 from utils_local.utils import profile_time
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI  # Используем новый импорт
 from langchain.schema import HumanMessage, SystemMessage, AIMessage
 
 logger = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ class LLMNode:
         self.openai_api_key = "EMPTY"
         self.openai_api_base = f"http://{self.host}:{self.port}/v1"
     
-        # Создаем экземпляр ChatOpenAI
+        # Создаем экземпляр ChatOpenAI из нового пакета
         self.chat = ChatOpenAI(
             openai_api_key=self.openai_api_key,
             openai_api_base=self.openai_api_base,
@@ -50,7 +50,7 @@ class LLMNode:
             # Формируем итоговый промпт
             human_message_content = (
                 f"Ответь на вопрос: {query_element.query}\n"
-                f"Обязательно укажи, что отвечаешь без учета контекса с представленных сайтов, так как не нашел ничего релевантного"
+                f"Обязательно укажи, что отвечаешь без учета контекста с представленных сайтов, так как не нашел ничего релевантного"
             )
             
         messages = [
@@ -60,7 +60,7 @@ class LLMNode:
         query_element.final_prompt = messages
 
         # Получаем ответ от модели
-        response = self.chat(messages)
+        response = self.chat.invoke(messages)
         query_element.answer = response.content
             
         return query_element
@@ -76,7 +76,7 @@ class LLMNode:
         query_element.final_prompt = messages
 
         # Получаем ответ от модели
-        response = self.chat(messages)
+        response = self.chat.invoke(messages)
         query_element.answer = response.content
             
         return query_element

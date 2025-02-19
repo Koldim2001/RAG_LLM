@@ -5,3 +5,4 @@ langchain-core
 requests
 pymilvus
 beautifulsoup4
+langchain-openai

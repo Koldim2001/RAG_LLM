@@ -41,13 +41,14 @@ class AskLLM:
             if show_data_info:
                 print("Результат векторного поиска:")
                 query_element.display_chunks(query_element.top_chunks, limit_size=200)
+                print("\n=======================\n")
             
             query_element = self.reranker_node.process(query_element)
 
             if show_data_info:
-                print("\n=======================\n")
                 print("Результат после реранка:")
                 query_element.display_chunks(query_element.prompt_chunks, limit_size=200)
+                print("\n=======================\n")
 
             query_element = self.llm_node.answer_with_rag(query_element)
 
@@ -55,8 +56,6 @@ class AskLLM:
             query_element = self.llm_node.answer(query_element)
 
         if show_data_info:
-            print("\n=======================\n")
-            print("ИТОГОВЫЙ ПРОМПТ В LLM:")
             query_element.display_final_prompt()
 
         return query_element
