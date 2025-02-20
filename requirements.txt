@@ -6,3 +6,4 @@ requests
 pymilvus
 beautifulsoup4
 langchain-openai
+streamlit==1.42.0
