@@ -1,0 +1,12 @@
+.env
+**.pt
+**__pycache__
+**ipynb_checkpoints
+**.ipynb
+models
+test_content
+volume_extra_services
+venv
+README.md
+.git
+.gitignore

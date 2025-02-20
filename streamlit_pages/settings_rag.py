@@ -31,7 +31,7 @@ def settings_rag():
                 url_list = [url.strip() for url in url_list_input.splitlines() if url.strip()]
                 
                 # Запускаем процесс создания RAG-датасета
-                make_rag.process(url_list, collection_db_name)
+                make_rag.process(url_list, collection_db_name, show_data_info=True)
                 st.success(f"RAG датасет '{collection_db_name}' успешно создан.")
             except Exception as e:
                 st.error(f"Произошла ошибка при создании RAG датасета: {e}")

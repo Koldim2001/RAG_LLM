@@ -34,7 +34,18 @@ class LLMNode:
         # Системный промпт, который задает контекст для модели
         self.system_prompt = SystemMessage(content="Вы полезный помощник, который отвечает на вопросы на русском языке. Ваши ответы должны быть четкими, информативными и полезными.")
 
-
+    def health_check(self, timeout_sec=4):
+        """Проверка доступности модели по api"""
+        url = f"http://{self.host}:{self.port}/health"
+        try:
+            response = requests.get(url, timeout=timeout_sec)  # Устанавливаем таймаут для запроса
+            if response.status_code == 200:  # Проверяем, что сервер вернул статус 200 OK
+                return True
+            else:
+                return False
+        except (requests.exceptions.RequestException, Exception):  # Обработка ошибок
+            return False
+        
     @profile_time
     def answer_with_rag(self, query_element: QueryElement, show_data_info=False) -> QueryElement:
         prompt_chunks = query_element.prompt_chunks

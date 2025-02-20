@@ -6,10 +6,7 @@ from services.AskLLM import AskLLM
 def initialize_ask_llm():
     return AskLLM()
 
-def chat():
-    # Получаем объект AskLLM
-    ask = initialize_ask_llm()
-
+def chat_process(ask):
     # Инициализация состояния сессии для хранения истории чата Streamlit
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
@@ -72,3 +69,14 @@ def chat():
     if st.sidebar.button("Очистить историю чата"):
         st.session_state.chat_history = []
         st.session_state.previous_messages = []
+
+
+def chat():
+    # Получаем объект AskLLM
+    ask = initialize_ask_llm()
+    if "health_check" not in st.session_state or st.session_state.health_check == False:
+        st.session_state.health_check = ask.llm_node.health_check()
+    if st.session_state.health_check:
+        chat_process(ask)
+    else:
+        st.error("API модели недоступно")

@@ -124,3 +124,16 @@ services:
     depends_on:
       - "etcd"
       - "minio"
+
+  streamlit-web-chat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: kay_web_audio:latest
+    container_name: streamlit-web-chat
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./results:/app/results
+      - ./streamlit_pages:/app/streamlit_pages
+      - ./app.py:/app/app.py
