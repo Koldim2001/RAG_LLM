@@ -1,12 +1,14 @@
 # RAG (Retrieval Augmented Generation) with LLM
----
+
 Сделано приложение, способное осуществлять QA при учитывании контента из любых предоставляемых сайтов. Надо передать список ссылок и далее можно задавать вопросы по данному материалу.
 
-Запуск сервисов:
+---
+
+### Запуск сервисов:
 ```
 docker compose up -d --build
 ```
-![Без имени](https://github.com/user-attachments/assets/8d8da6d9-8c11-4dd3-b611-be1675e4ea74)
+![Внешний вид сайта](https://github.com/user-attachments/assets/8d8da6d9-8c11-4dd3-b611-be1675e4ea74)
 Сайт по работе с LLM (чат-бот с рагом) станет доступен после запуска компоуза по этому адресу - http://localhost:8501/
 
 Код для работы с раг из python - *rag_example.ipynb*
