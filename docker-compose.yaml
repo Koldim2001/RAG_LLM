@@ -129,7 +129,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: kay_web_audio:latest
+    image: streamlit-web-chat:latest
     container_name: streamlit-web-chat
     ports:
       - "8501:8501"
@@ -137,3 +137,4 @@ services:
       - ./results:/app/results
       - ./streamlit_pages:/app/streamlit_pages
       - ./app.py:/app/app.py
+      - ./configs:/app/configs

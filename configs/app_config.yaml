@@ -8,25 +8,25 @@ chunking_node:
   chunk_overlap: 0 # перекрытие между чанками в символах
 
 vector_db_node:  
-  host: localhost
-  port: 19530
+  host: milvus-standalone #localhost
+  port: 19530 #19530
   dim: 1024 # размерность вектора
   top_k: 30 # сколько сообщений взять ближайших чанков из бд
 
 embedder_node:
-  host: localhost
-  port: 8080
+  host: embedder #localhost
+  port: 80 #8080
   max_batch_size: 512 # сколько чанков можно подать за раз
 
 reranker_node:
-  host: localhost
-  port: 8081
+  host: reranker #localhost
+  port: 80 #8081
   top_k: 5 # сколько ближайших значений после реранка в итоговый запрос
   min_score: 0.005 # минимальный порог по релевантонсти для подачи в запрос
 
 llm_node:
-  host: localhost
-  port: 8071
+  host: vllm #localhost
+  port: 8000 #8071
   model_name: "Qwen/Qwen2.5-7B-Instruct-GPTQ-Int4"
   temperature: 0 # Устанавливаем температуру (от 0 до 1, где 0 - детерминированный ответ, 1 - более случайный)
   max_tokens_output: 5000 # ограничивает количество токенов в ответе

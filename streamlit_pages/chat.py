@@ -54,7 +54,9 @@ def chat_process(ask):
 
         # Обработка запроса через AskLLM
         message_number = (len(st.session_state.chat_history) - 1) // 2  # Номер текущего сообщения
-        res = ask.process(prompt, message_number, collection_db_name, st.session_state.previous_messages)
+       
+        with st.spinner("Модель отвечает"):
+            res = ask.process(prompt, message_number, collection_db_name, st.session_state.previous_messages)
 
         # Получение ответа модели
         answer = res.answer
