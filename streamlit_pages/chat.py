@@ -69,7 +69,6 @@ def chat_process(ask):
 
     # Очистка истории при обновлении страницы
     if st.sidebar.button("Очистить историю чата"):
-        st.session_state.chat_history = []
         st.session_state.previous_messages = []
 
 
