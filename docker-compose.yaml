@@ -85,7 +85,7 @@ services:
       - ./models/nlp/vqa:/models
     environment:
       <<: *environment
-    command: --model /models/Qwen2-VL-7B-Instruct-GPTQ-Int4 --port 8000 --gpu-memory-utilization 0.95 --served-model-name Qwen/Qwen2-VL-7B-Instruct-GPTQ-Int4 --limit-mm-per-prompt "image=1"
+    command: --model /models/Qwen2-VL-7B-Instruct-GPTQ-Int4 --port 8000 --gpu-memory-utilization 0.95 --served-model-name Qwen/Qwen2-VL-7B-Instruct-GPTQ-Int4 --limit-mm-per-prompt='{"image":1}'
     deploy:
       resources:
         reservations:
