@@ -138,3 +138,19 @@ services:
       - ./streamlit_pages:/app/streamlit_pages
       - ./app.py:/app/app.py
       - ./configs:/app/configs
+
+
+  # vllm-visual:
+  #   container_name: vllm-visual
+  #   image: vllm/vllm-openai:latest
+  #   ports:
+  #     - 50000:8000
+  #   command: --model Qwen/Qwen2-VL-7B-Instruct-GPTQ-Int4 --port 8000 --gpu-memory-utilization 0.95 --served-model-name Qwen/Qwen2-VL-7B-Instruct-GPTQ-Int4 --limit-mm-per-prompt='{"image":1}'
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #         - driver: nvidia
+  #           device_ids: [ '0' ]
+  #           capabilities: [gpu]
+
